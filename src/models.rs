@@ -2,7 +2,6 @@
 pub struct Event {
     pub id: i32,
     pub summary: String,
-    pub time: String,
     pub done: bool,
 }
 
@@ -12,5 +11,4 @@ use super::schema::events;
 #[table_name="events"]
 pub struct NewEvent<'a> {
     pub summary: &'a str,
-    pub time: &'a str,
 }

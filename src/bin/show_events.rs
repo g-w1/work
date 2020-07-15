@@ -16,7 +16,5 @@ fn main() {
     println!("Displaying {} events", results.len());
     for event in results {
         println!("{}", event.summary);
-        println!("----------\n");
-        println!("{}", event.time);
     }
 }

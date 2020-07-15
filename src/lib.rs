@@ -18,12 +18,11 @@ pub fn establish_connection() -> SqliteConnection {
 
 use self::models::{Event, NewEvent};
 
-pub fn create_event<'a>(conn: &SqliteConnection, summary: &'a str, time: &'a str) -> usize {
+pub fn create_event<'a>(conn: &SqliteConnection, summary: &'a str) -> usize {
     use schema::events;
 
     let new_event = NewEvent {
         summary: summary,
-        time: time,
     };
 
 

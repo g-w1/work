@@ -11,9 +11,7 @@ fn main() {
     stdin().read_line(&mut summary).unwrap();
     let summary = &summary[..(summary.len() - 1)]; // Drop the newline character
     println!("\nOk! Let's write {} (Press {} when finished)\n", summary, EOF);
-    let mut time = String::new();
-    stdin().read_to_string(&mut time).unwrap();
-    let event = create_event(&connection, summary, &time);
+    let event = create_event(&connection, summary);
     println!("\nSaved event {}", summary);
 }
 
