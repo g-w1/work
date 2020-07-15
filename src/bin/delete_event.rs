@@ -8,11 +8,11 @@ use std::env::args;
 fn main() {
     use work::schema::events::dsl::*;
 
-    let target = args().nth(1).expect("Expected a target to match against");
+    let target = args().nth(1).expect("expected an id of the event to delete");
     let pattern = format!("%{}%", target);
 
     let connection = establish_connection();
-    let num_deleted = diesel::delete(events.filter(summary.like(pattern)))
+    let num_deleted = diesel::delete(events.filter(id.eq(target)))
         .execute(&connection)
         .expect("Error deleting event");
 

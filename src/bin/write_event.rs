@@ -14,7 +14,7 @@ fn main() {
     let mut time = String::new();
     stdin().read_to_string(&mut time).unwrap();
     let event = create_event(&connection, summary, &time);
-    println!("\nSaved event {}", summary, event);
+    println!("\nSaved event {}", summary);
 }
 
 #[cfg(not(windows))]
