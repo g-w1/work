@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 diesel = { version = "1.4.4", features = ["sqlite"] }
 dotenv = "0.15.0"
+clap = "3.0.0-beta.1"

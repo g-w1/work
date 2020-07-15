@@ -2,8 +2,8 @@
 extern crate diesel;
 extern crate dotenv;
 
-pub mod schema;
 pub mod models;
+pub mod schema;
 
 use diesel::prelude::*;
 use dotenv::dotenv;
@@ -21,10 +21,7 @@ use self::models::{Event, NewEvent};
 pub fn create_event<'a>(conn: &SqliteConnection, summary: &'a str) -> usize {
     use schema::events;
 
-    let new_event = NewEvent {
-        summary: summary,
-    };
-
+    let new_event = NewEvent { summary: summary };
 
     diesel::insert_into(events::table)
         .values(&new_event)

@@ -1,5 +1,5 @@
-extern crate work;
 extern crate diesel;
+extern crate work;
 
 use self::work::*;
 use std::io::{stdin, Read};
@@ -10,7 +10,10 @@ fn main() {
     let mut summary = String::new();
     stdin().read_line(&mut summary).unwrap();
     let summary = &summary[..(summary.len() - 1)]; // Drop the newline character
-    println!("\nOk! Let's write {} (Press {} when finished)\n", summary, EOF);
+    println!(
+        "\nOk! Let's write {} (Press {} when finished)\n",
+        summary, EOF
+    );
     let event = create_event(&connection, summary);
     println!("\nSaved event {}", summary);
 }

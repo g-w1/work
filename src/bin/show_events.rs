@@ -1,14 +1,15 @@
-extern crate work;
 extern crate diesel;
+extern crate work;
 
-use self::work::*;
-use self::models::*;
 use self::diesel::prelude::*;
+use self::models::*;
+use self::work::*;
 
 fn main() {
     use work::schema::events::dsl::*;
     let connection = establish_connection();
-    let results = events.filter(done.eq(false))
+    let results = events
+        .filter(done.eq(false))
         .limit(5)
         .load::<Event>(&connection)
         .expect("Error loading events");

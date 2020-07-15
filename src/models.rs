@@ -8,7 +8,7 @@ pub struct Event {
 use super::schema::events;
 
 #[derive(Insertable)]
-#[table_name="events"]
+#[table_name = "events"]
 pub struct NewEvent<'a> {
     pub summary: &'a str,
 }

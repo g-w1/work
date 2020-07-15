@@ -1,16 +1,19 @@
-extern crate work;
 extern crate diesel;
+extern crate work;
 
 use self::diesel::prelude::*;
-use self::work::*;
 use self::models::Event;
+use self::work::*;
 use std::env::args;
 
 fn main() {
-    use work::schema::events::dsl::{events, done};
+    use work::schema::events::dsl::{done, events};
 
-    let id = args().nth(1).expect("make_done requires an event id")
-        .parse::<i32>().expect("Invalid ID");
+    let id = args()
+        .nth(1)
+        .expect("make_done requires an event id")
+        .parse::<i32>()
+        .expect("Invalid ID");
     let connection = establish_connection();
 
     let _ = diesel::update(events.find(id))
