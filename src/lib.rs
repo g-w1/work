@@ -15,3 +15,19 @@ pub fn establish_connection() -> SqliteConnection {
     SqliteConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
+
+use self::models::{Event, NewEvent};
+
+pub fn create_event<'a>(conn: &SqliteConnection, summary: &'a str, time: &'a str) -> usize {
+    use schema::events;
+
+    let new_event = NewEvent {
+        summary: summary,
+        time: time,
+    };
+
+    diesel::insert_into(events::table)
+        .values(&new_event)
+        .execute(conn)
+        .expect("Error saving new event")
+}

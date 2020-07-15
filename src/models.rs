@@ -5,3 +5,12 @@ pub struct Event {
     pub time: String,
     pub done: bool,
 }
+
+use super::schema::events;
+
+#[derive(Insertable)]
+#[table_name="events"]
+pub struct NewEvent<'a> {
+    pub summary: &'a str,
+    pub time: &'a str,
+}
