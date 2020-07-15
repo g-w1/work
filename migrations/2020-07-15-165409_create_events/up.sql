@@ -1,1 +1,6 @@
--- Your SQL goes here
+CREATE TABLE events (
+  id INTEGER NOT NULL PRIMARY KEY,
+  summary VARCHAR NOT NULL,
+  time TEXT NOT NULL,
+  done BOOLEAN NOT NULL DEFAULT 0
+)
