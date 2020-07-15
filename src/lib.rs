@@ -26,6 +26,7 @@ pub fn create_event<'a>(conn: &SqliteConnection, summary: &'a str, time: &'a str
         time: time,
     };
 
+
     diesel::insert_into(events::table)
         .values(&new_event)
         .execute(conn)
