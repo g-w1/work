@@ -4,7 +4,8 @@ pub mod event;
 
 use clap::{App, Arg, Subcommand};
 use database::*;
-use rusqlite::{params, Connection, Result};
+use event::Event;
+use rusqlite::{params, Connection, Result, NO_PARAMS};
 use std::env::args;
 use std::io::{stdin, Read};
 
@@ -43,8 +44,12 @@ fn format_finished(finished_or_not: bool, in_20th_century: bool) -> String {
     }
 }
 
-fn main() {
-    let conn = Connection::open("../test.db").unwrap();
-    up(&conn);
-    println!("{}", format_finished(are_u_sure(), true));
+fn main() -> Result<()> {
+    let conn = Connection::open("./test.db")?;
+    // down(&conn)?;
+    up(&conn)?;
+    let spanish = Event::new(String::from("spanish quiz"));
+    spanish.into_database(&conn)?;
+    println!("{:?}", get_event_by_id(&conn, 0)?);
+    Ok(())
 }

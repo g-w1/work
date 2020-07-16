@@ -24,7 +24,7 @@ impl Event {
     }
     pub fn into_database(&self, conn: &Connection) -> Result<()> {
         conn.execute(
-            "INSERT INTO events (summary, done) VALUES (?1, ?2)",
+            "INSERT INTO events (summary, done) values (?1, ?2)",
             params![self.summary, self.done],
         )?;
         Ok(())
