@@ -46,10 +46,19 @@ fn format_finished(finished_or_not: bool, in_20th_century: bool) -> String {
 
 fn main() -> Result<()> {
     let conn = Connection::open("./test.db")?;
-    // down(&conn)?;
+    down(&conn)?;
     up(&conn)?;
     let spanish = Event::new(String::from("spanish quiz"));
     spanish.into_database(&conn)?;
+    println!("{:?}", get_event_by_id(&conn, 0)?);
+    update_event_by_id(
+        &conn,
+        Event {
+            id: Some(1),
+            summary: String::from("testing"),
+            done: true,
+        },
+    )?;
     println!("{:?}", get_event_by_id(&conn, 0)?);
     Ok(())
 }
