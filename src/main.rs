@@ -7,18 +7,9 @@ use clap::{App, Arg, Subcommand};
 use database::*;
 use event::Event;
 use frontend::*;
-use rusqlite::{params, Connection, Result};
-use std::env::args;
-use std::io::{stdin, Read};
+// use crate::frontend::delete_event;
+use rusqlite::{Connection, Result};
 
-fn delete(id_to_delete: usize) {
-    println!("delete event with id: {{}} and summary: {{}}?",);
-    if are_u_sure() {
-        println!("Deleted event with id {}", id_to_delete);
-    } else {
-        println!("Canceled. Did not delete anything.");
-    }
-}
 
 fn main() -> Result<()> {
     let conn = Connection::open("./test.db")?;
@@ -36,7 +27,8 @@ fn main() -> Result<()> {
     )?;
     let karate = Event::new(String::from("i need to practice karate"));
     karate.into_database(&conn)?;
-    delete_event_by_id(&conn, 2)?;
+    println!("{:?}", get_all_events(&conn));
+    delete_event(&conn, get_event_by_id(&conn, 1))?;
     println!("{:?}", get_all_events(&conn));
     Ok(())
 }
