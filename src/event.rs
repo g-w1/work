@@ -1,5 +1,3 @@
-use rusqlite::{params, Connection, Result};
-
 #[derive(Debug)]
 pub struct Event {
     pub id: Option<i32>,
@@ -21,12 +19,5 @@ impl Event {
             summary: summary,
             done: done,
         }
-    }
-    pub fn into_database(&self, conn: &Connection) -> Result<()> {
-        conn.execute(
-            "INSERT INTO events (summary, done) values (?1, ?2)",
-            params![self.summary, self.done],
-        )?;
-        Ok(())
     }
 }

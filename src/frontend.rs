@@ -77,6 +77,59 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
             event.summary
         );
     }
+    line('-');
+    Ok(())
+}
+pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> {
+    let events_special_stuff = get_range_events(&conn, start, end);
+    let events = match events_special_stuff {
+        Ok(x) => x,
+        Err(_) => {
+            println!("An Error Occured.\nTry selecting a range with events in it or adding some events to list first.\nWhoops");
+            return Ok(());
+        }
+    };
+    line('_');
+    println!("DONE| ID| SUMMARY");
+    line('-');
+    for event_res in events {
+        let event = match event_res {
+            Ok(x) => x,
+            Err(_) => {
+                println!("Error Occured. Whoops.");
+                return Ok(());
+            }
+        };
+        println!(
+            "{} | {} | {}",
+            format_finished(event.done, false),
+            event.id.unwrap(),
+            event.summary
+        );
+    }
+    line('-');
+    Ok(())
+}
+
+pub fn list_event_by_id(conn: &Connection, id: u32) -> Result<()> {
+    let event_result = get_event_by_id(&conn, id);
+    let event = match event_result {
+        Ok(x) => x,
+        Err(_) => {
+            println!("Error. Try another id that is valid");
+            return Ok(());
+        }
+    };
+    line('_');
+    println!("DONE| ID| SUMMARY");
+    line('-');
+    println!(
+        "{} | {} | {}",
+        format_finished(event.done, false),
+        event.id.unwrap(),
+        event.summary
+    );
+    line('-');
     Ok(())
 }
 

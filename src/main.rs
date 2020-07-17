@@ -3,11 +3,9 @@ pub mod database;
 pub mod event;
 pub mod frontend;
 
-use clap::{App, Arg, Subcommand};
+use config::*;
 use database::*;
 use event::Event;
-use frontend::*;
-// use crate::frontend::delete_event;
 use rusqlite::{Connection, Result};
 
 fn main() -> Result<()> {
@@ -16,20 +14,10 @@ fn main() -> Result<()> {
     up(&conn)?;
     let spanish_event = Event::new(String::from("spanish quiz"));
     let other_event = Event::new(String::from("test2"));
-    other_event.into_database(&conn);
+    other_event.into_database(&conn)?;
     spanish_event.into_database(&conn)?;
-    update_event_by_id(
-        &conn,
-        Event {
-            id: Some(1),
-            summary: String::from("testing"),
-            done: true,
-        },
-    )?;
     let karate = Event::new(String::from("i need to practice karate"));
     karate.into_database(&conn)?;
-    list_all_events(&conn);
-    delete_event(&conn, get_event_by_id(&conn, 2))?;
-    list_all_events(&conn);
+    parse(&conn)?;
     Ok(())
 }

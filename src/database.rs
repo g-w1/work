@@ -19,7 +19,7 @@ pub fn down(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-pub fn get_event_by_id(conn: &Connection, id_to_query: i32) -> Result<Event> {
+pub fn get_event_by_id(conn: &Connection, id_to_query: u32) -> Result<Event> {
     conn.query_row(
         "SELECT id, summary, done FROM events WHERE id = ?1",
         params![Some(id_to_query)],
@@ -65,4 +65,30 @@ pub fn get_all_events(conn: &Connection) -> Result<Vec<Result<Event>>> {
         events.push(event);
     }
     Ok(events)
+}
+pub fn get_range_events(conn: &Connection, start: u32, end: u32) -> Result<Vec<Result<Event>>> {
+    let mut stmt =
+        conn.prepare("SELECT id, summary, done FROM events WHERE id >= ?1 AND id<= ?2")?;
+    let rows = stmt.query_map(params![start, end], |row| {
+        Ok(Event {
+            id: Some(row.get(0)?),
+            summary: row.get(1)?,
+            done: row.get(2)?,
+        })
+    })?;
+    let mut events = Vec::new();
+    for event in rows {
+        events.push(event);
+    }
+    Ok(events)
+}
+
+impl Event {
+    pub fn into_database(&self, conn: &Connection) -> Result<()> {
+        conn.execute(
+            "INSERT INTO events (summary, done) values (?1, ?2)",
+            params![self.summary, self.done],
+        )?;
+        Ok(())
+    }
 }
