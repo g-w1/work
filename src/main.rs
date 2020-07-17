@@ -1,11 +1,12 @@
 pub mod config;
 pub mod database;
 pub mod event;
+pub mod frontend;
 
 use clap::{App, Arg, Subcommand};
 use database::*;
 use event::Event;
-use rusqlite::{params, Connection, Result, NO_PARAMS};
+use rusqlite::{params, Connection, Result};
 use std::env::args;
 use std::io::{stdin, Read};
 
@@ -45,9 +46,8 @@ fn main() -> Result<()> {
     let conn = Connection::open("./test.db")?;
     down(&conn)?;
     up(&conn)?;
-    let spanish = Event::new(String::from("spanish quiz"));
-    spanish.into_database(&conn)?;
-    println!("{:?}", get_event_by_id(&conn, 1)?);
+    let spanish_event = Event::new(String::from("spanish quiz"));
+    spanish_event.into_database(&conn)?;
     update_event_by_id(
         &conn,
         Event {
@@ -56,6 +56,9 @@ fn main() -> Result<()> {
             done: true,
         },
     )?;
-    println!("{:?}", get_event_by_id(&conn, 1)?);
+    let karate = Event::new(String::from("i need to practice karate"));
+    karate.into_database(&conn)?;
+    delete_event_by_id(&conn, 2)?;
+    println!("{:?}", get_all_events(&conn));
     Ok(())
 }

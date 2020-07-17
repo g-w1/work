@@ -43,3 +43,26 @@ pub fn update_event_by_id(conn: &Connection, event_to_update: Event) -> Result<(
     )?;
     Ok(())
 }
+pub fn delete_event_by_id(conn: &Connection, id_of_event_to_delete: i32) -> Result<()> {
+    conn.execute(
+        "DELETE FROM events WHERE id = ?1;",
+        params![Some(id_of_event_to_delete)],
+    )?;
+    Ok(())
+}
+
+pub fn get_all_events(conn: &Connection) -> Result<Vec<Result<Event>>> {
+    let mut stmt = conn.prepare("SELECT id, summary, done FROM events")?;
+    let rows = stmt.query_map(NO_PARAMS, |row| {
+        Ok(Event {
+            id: Some(row.get(0)?),
+            summary: row.get(1)?,
+            done: row.get(2)?,
+        })
+    })?;
+    let mut events = Vec::new();
+    for event in rows {
+        events.push(event);
+    }
+    Ok(events)
+}
