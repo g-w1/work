@@ -20,10 +20,19 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
     }
     if let Some(ref lsmatches) = matches.subcommand_matches("ls") {
         if let Some(ids) = lsmatches.value_of("id(s)") {
-            println!("ids: {}", ids);
+            parse_ids(ids.to_string());
         } else {
             list_all_events(&conn)?;
         }
     }
     Ok(())
+}
+
+fn parse_ids(id_string: String) -> Result<(u32, Option<u32>)> {
+    if id_string.contains('-') {
+        let input_nums: Vec<&str> = id_string.split('-').collect();
+        println!("input_nums: {:?}", input_nums);
+    } else {
+    }
+    (1, Some(1))
 }
