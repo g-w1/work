@@ -21,10 +21,7 @@ fn are_u_sure() -> bool {
     }
 }
 fn delete(id_to_delete: usize) {
-    println!(
-        "delete event with id: {{}} and summary: {{}}?",
-        // id_to_delete, event.summary
-    );
+    println!("delete event with id: {{}} and summary: {{}}?",);
     if are_u_sure() {
         println!("Deleted event with id {}", id_to_delete);
     } else {
@@ -50,7 +47,7 @@ fn main() -> Result<()> {
     up(&conn)?;
     let spanish = Event::new(String::from("spanish quiz"));
     spanish.into_database(&conn)?;
-    println!("{:?}", get_event_by_id(&conn, 0)?);
+    println!("{:?}", get_event_by_id(&conn, 1)?);
     update_event_by_id(
         &conn,
         Event {
@@ -59,6 +56,6 @@ fn main() -> Result<()> {
             done: true,
         },
     )?;
-    println!("{:?}", get_event_by_id(&conn, 0)?);
+    println!("{:?}", get_event_by_id(&conn, 1)?);
     Ok(())
 }

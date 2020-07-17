@@ -19,17 +19,18 @@ pub fn down(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-pub fn get_event_by_id(conn: &Connection, id_to_query: i32) -> Result<Option<Result<Event>>> {
-    let mut stmt = conn.prepare("SELECT id, summary, done FROM events")?;
-    let mut event_iter = stmt.query_map(params![], |row| {
-        Ok(Event {
-            id: row.get(0)?,
-            summary: row.get(1)?,
-            done: row.get(2)?,
-        })
-    })?;
-    let event_to_return = event_iter.nth(id_to_query as usize);
-    Ok(event_to_return)
+pub fn get_event_by_id(conn: &Connection, id_to_query: i32) -> Result<Event> {
+    conn.query_row(
+        "SELECT id, summary, done FROM events WHERE id = ?1",
+        params![Some(id_to_query)],
+        |row| {
+            Ok(Event {
+                id: row.get(0)?,
+                summary: row.get(1)?,
+                done: row.get(2)?,
+            })
+        },
+    )
 }
 pub fn update_event_by_id(conn: &Connection, event_to_update: Event) -> Result<()> {
     conn.execute(
