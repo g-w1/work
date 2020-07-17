@@ -32,7 +32,7 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()>
     let event = match eventresult {
         Ok(x) => x,
         Err(_) => {
-            println!("Error: event not found\nDid not delete.\nPlease try again.");
+            eprintln!("Error: event not found\nDid not delete.\nPlease try again.");
             return Ok(());
         }
     };
@@ -55,7 +55,7 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
     let events = match events_special_stuff {
         Ok(x) => x,
         Err(_) => {
-            println!("An Error Occured.\nTry adding some events to list first.\nWhoops");
+            eprintln!("An Error Occured.\nTry adding some events to list first.\nWhoops");
             return Ok(());
         }
     };
@@ -66,7 +66,7 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
         let event = match event_res {
             Ok(x) => x,
             Err(_) => {
-                println!("Error Occured. Whoops.");
+                eprintln!("Error Occured. Whoops.");
                 return Ok(());
             }
         };
@@ -85,7 +85,7 @@ pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> 
     let events = match events_special_stuff {
         Ok(x) => x,
         Err(_) => {
-            println!("An Error Occured.\nTry selecting a range with events in it or adding some events to list first.\nWhoops");
+            eprintln!("An Error Occured.\nTry selecting a range with events in it or adding some events to list first.\nWhoops");
             return Ok(());
         }
     };
@@ -96,7 +96,7 @@ pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> 
         let event = match event_res {
             Ok(x) => x,
             Err(_) => {
-                println!("Error Occured. Whoops.");
+                eprintln!("Error Occured. Whoops.");
                 return Ok(());
             }
         };
@@ -116,7 +116,7 @@ pub fn list_event_by_id(conn: &Connection, id: u32) -> Result<()> {
     let event = match event_result {
         Ok(x) => x,
         Err(_) => {
-            println!("Error. Try another id that is valid");
+            eprintln!("Error. Try another id that is valid");
             return Ok(());
         }
     };
