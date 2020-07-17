@@ -10,12 +10,13 @@ use frontend::*;
 // use crate::frontend::delete_event;
 use rusqlite::{Connection, Result};
 
-
 fn main() -> Result<()> {
     let conn = Connection::open("./test.db")?;
     down(&conn)?;
     up(&conn)?;
     let spanish_event = Event::new(String::from("spanish quiz"));
+    let other_event = Event::new(String::from("test2"));
+    other_event.into_database(&conn);
     spanish_event.into_database(&conn)?;
     update_event_by_id(
         &conn,
@@ -27,8 +28,8 @@ fn main() -> Result<()> {
     )?;
     let karate = Event::new(String::from("i need to practice karate"));
     karate.into_database(&conn)?;
-    println!("{:?}", get_all_events(&conn));
-    delete_event(&conn, get_event_by_id(&conn, 1))?;
-    println!("{:?}", get_all_events(&conn));
+    list_all_events(&conn);
+    delete_event(&conn, get_event_by_id(&conn, 2))?;
+    list_all_events(&conn);
     Ok(())
 }
