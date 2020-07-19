@@ -32,6 +32,11 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
                 .about("add an event to the database")
                 .arg("<summary> 'summary of the event to add to the database'"),
         )
+        .subcommand(
+            App::new("update")
+                .about("change an event that is in the database")
+                .arg("<id> 'the id of the event that you want to change'"),
+        )
         .get_matches();
     // config parsing
     if let Some(c) = matches.value_of("config") {
@@ -78,7 +83,22 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
             println!("added event with summary ``{}\" to database", summary);
         }
     }
-    Ok(())
+    // parsing update cmd
+    if let Some(ref update_matches) = matches.subcommand_matches("update") {
+        if let Some(idstring) = update_matches.value_of("id") {
+            match parse_ids(idstring) {
+                Ok(x) => {
+                    update_event_from_id(&conn, x)?;
+                }
+                Err(_) => {
+                    eprintln!(
+                        "Error: invalid input. Try doing something like `work ls <id of an event>`"
+                    );
+                }
+            };
+        }
+    }
+        Ok(())
 }
 
 fn parse_ids(id_string: &str) -> Result<u32, std::num::ParseIntError> {

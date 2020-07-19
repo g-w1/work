@@ -64,6 +64,7 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()>
     }
     Ok(())
 }
+
 pub fn delete_event_from_id(conn: &Connection, id: i32) {
     println!(
         "Delete event with id: '{}' and summary: `{}'?\nThis is not undoable.",
@@ -125,6 +126,7 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
     print_vec_events(&events_out);
     Ok(())
 }
+
 pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> {
     let events_special_stuff = get_range_events(&conn, start, end);
     let events = match events_special_stuff {
@@ -166,6 +168,7 @@ pub fn add_event(conn: &Connection, summ: String) -> Result<()> {
     Event::new(summ).into_database(&conn)?;
     Ok(())
 }
+
 fn line(char_to_repeat: char) {
     let size = terminal_size().unwrap();
     let mut size_str = String::new();
@@ -173,4 +176,50 @@ fn line(char_to_repeat: char) {
         size_str.push(char_to_repeat);
     }
     println!("{}", size_str);
+}
+
+pub fn update_event_from_id(conn: &Connection, id: u32) -> Result<()> {
+    let event = match get_event_by_id(&conn, id) {
+        Ok(x) => x,
+        Err(_) => {
+            eprintln!("Id not valid please try again");
+            return Ok(());
+        }
+    };
+    println!(
+        "What should be the new summary of the event with summary ``{}\" be:",
+        event.summary
+    );
+    let mut new_summ: String = String::new();
+    stdin().read_line(&mut new_summ).unwrap();
+    let new_summ: String = new_summ.trim().to_string();
+    let done: bool;
+    if !event.done {
+        println!("Mark event as done?");
+        let mut sure: String = String::new();
+        stdin().read_line(&mut sure).unwrap();
+        let sure = sure.to_lowercase().trim().to_owned();
+        if sure == String::from("y") || sure == String::from("yes") {
+            done = true;
+        } else {
+            done = false;
+        }
+    } else {
+        println!("Mark event as unfinished?");
+        let mut sure: String = String::new();
+        stdin().read_line(&mut sure).unwrap();
+        let sure = sure.to_lowercase().trim().to_owned();
+        if sure == String::from("y") || sure == String::from("yes") {
+            done = false;
+        } else {
+            done = true;
+        }
+    }
+    match update_event_by_id(&conn, Event::new_from_db(Some(id as i32), new_summ, done)) {
+        Ok(_) => Ok(()),
+        _ => {
+            eprintln!("Error: something went wrong. oof");
+            Ok(())
+        }
+    }
 }
