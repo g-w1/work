@@ -98,7 +98,7 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
             };
         }
     }
-        Ok(())
+    Ok(())
 }
 
 fn parse_ids(id_string: &str) -> Result<u32, std::num::ParseIntError> {

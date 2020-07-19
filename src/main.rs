@@ -2,8 +2,10 @@ pub mod config;
 pub mod database;
 pub mod event;
 pub mod frontend;
+pub mod fuzzy;
 
 use database::*;
+use fuzzy::*;
 use rusqlite::{Connection, Result};
 
 fn main() -> Result<()> {
@@ -14,11 +16,9 @@ fn main() -> Result<()> {
     // make sure it works
     up(&conn)?;
     // testing
-    // use event::Event;
     // use frontend::*;
-    // let spanish_event = Event::new(String::from("spanish quiz"));
-    // spanish_event.into_database(&conn)?;
-    // update_event_from_id(&conn, 1)?;
+    // use event::Event;
+    sk_all_events(&conn);
     // this is where the magic happens!
     config::parse(&conn)?;
     Ok(())
