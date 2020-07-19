@@ -20,11 +20,11 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
                     .index(1),
             ),
         )
-        // the delete subcommand. delete stuff from database
+        // the rm subcommand. rm stuff from database
         .subcommand(
-            App::new("delete")
-                .about("delete an event from the database")
-                .arg("<id> 'the id to delete'"),
+            App::new("rm")
+                .about("rm an event from the database")
+                .arg("<id> 'the id to rm'"),
         )
         // the add subcommand. add stuff to database
         .subcommand(
@@ -52,9 +52,9 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
             list_all_events(&conn)?;
         }
     }
-    // parsing delete cmd
-    if let Some(ref delete_matches) = matches.subcommand_matches("delete") {
-        if let Some(ids) = delete_matches.value_of("id") {
+    // parsing rm cmd
+    if let Some(ref rm_matches) = matches.subcommand_matches("rm") {
+        if let Some(ids) = rm_matches.value_of("id") {
             match parse_ids(ids) {
                 Ok(x) => {
                     delete_event_from_id(&conn, x as i32);
@@ -64,7 +64,7 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
                         delete_down(&conn)?;
                     } else {
                         eprintln!(
-                        "Invalid input. Try doing something like `work delete <id of an event or all to delete_everything>`"
+                        "Invalid input. Try doing something like `work rm <id of an event or all to rm_everything>`"
                     );
                     }
                 }
