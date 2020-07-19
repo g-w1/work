@@ -33,7 +33,7 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
                 .arg("<summary> 'summary of the event to add to the database'"),
         )
         .subcommand(
-            App::new("update")
+            App::new("edit")
                 .about("change an event that is in the database")
                 .arg("<id> 'the id of the event that you want to change'"),
         )
@@ -83,9 +83,9 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
             println!("added event with summary ``{}\" to database", summary);
         }
     }
-    // parsing update cmd
-    if let Some(ref update_matches) = matches.subcommand_matches("update") {
-        if let Some(idstring) = update_matches.value_of("id") {
+    // parsing edit cmd
+    if let Some(ref edit_matches) = matches.subcommand_matches("edit") {
+        if let Some(idstring) = edit_matches.value_of("id") {
             match parse_ids(idstring) {
                 Ok(x) => {
                     update_event_from_id(&conn, x)?;

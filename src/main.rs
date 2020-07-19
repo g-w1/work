@@ -18,7 +18,7 @@ fn main() -> Result<()> {
     // testing
     // use frontend::*;
     // use event::Event;
-    sk_all_events(&conn);
+    // sk_all_events(&conn);
     // this is where the magic happens!
     config::parse(&conn)?;
     Ok(())
