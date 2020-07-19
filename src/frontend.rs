@@ -28,6 +28,21 @@ fn format_finished(finished_or_not: bool, in_20th_century: bool) -> String {
     }
 }
 
+fn print_vec_events(event_vec: &Vec<Event>) {
+    line('_');
+    println!("DONE| ID| SUMMARY");
+    line('-');
+    for event in event_vec {
+        println!(
+            "{} | {} | {}",
+            format_finished(event.done, true),
+            event.id.unwrap(),
+            event.summary
+        );
+    }
+    line('-');
+}
+
 pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()> {
     let event = match eventresult {
         Ok(x) => x,
@@ -49,6 +64,43 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()>
     }
     Ok(())
 }
+pub fn delete_event_from_id(conn: &Connection, id: i32) {
+    println!(
+        "Delete event with id: '{}' and summary: `{}'?\nThis is not undoable.",
+        id,
+        match get_event_by_id(&conn, id as u32) {
+            Ok(x) => x,
+            Err(_) => {
+                eprintln!(
+                "Error: event not found.\nDid not delete.\nPlease try again with a valid event id"
+            );
+                return;
+            }
+        }
+        .summary
+    );
+    if are_u_sure() {
+        match delete_event_by_id(&conn, id) {
+            Ok(_) => println!("Deleted event with id {}", id),
+            Err(_) => eprintln!(
+                "Error: event not found.\nDid not delete.\nPlease try again with a valid event id"
+            ),
+        }
+    } else {
+        println!("Canceled. Did not delete anything.");
+    }
+}
+
+pub fn delete_down(conn: &Connection) -> Result<()> {
+    println!("THIS WILL DELETE THE WHOLE DATABASE.");
+    if are_u_sure() {
+        down(&conn)?;
+        println!("deleted everything");
+    } else {
+        println!("phew. did not delete anything");
+    }
+    Ok(())
+}
 
 pub fn list_all_events(conn: &Connection) -> Result<()> {
     let events_special_stuff = get_all_events(&conn);
@@ -59,25 +111,18 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
             return Ok(());
         }
     };
-    line('_');
-    println!("DONE| ID| SUMMARY");
-    line('-');
+    let mut events_out: Vec<Event> = Vec::new();
     for event_res in events {
-        let event = match event_res {
+        let _event = match event_res {
             Ok(x) => x,
             Err(_) => {
                 eprintln!("Error Occured. Whoops.");
                 return Ok(());
             }
         };
-        println!(
-            "{} | {} | {}",
-            format_finished(event.done, false),
-            event.id.unwrap(),
-            event.summary
-        );
+        events_out.push(_event);
     }
-    line('-');
+    print_vec_events(&events_out);
     Ok(())
 }
 pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> {
@@ -89,25 +134,18 @@ pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> 
             return Ok(());
         }
     };
-    line('_');
-    println!("DONE| ID| SUMMARY");
-    line('-');
+    let mut events_out: Vec<Event> = Vec::new();
     for event_res in events {
-        let event = match event_res {
+        let _event = match event_res {
             Ok(x) => x,
             Err(_) => {
                 eprintln!("Error Occured. Whoops.");
                 return Ok(());
             }
         };
-        println!(
-            "{} | {} | {}",
-            format_finished(event.done, false),
-            event.id.unwrap(),
-            event.summary
-        );
+        events_out.push(_event);
     }
-    line('-');
+    print_vec_events(&events_out);
     Ok(())
 }
 
@@ -120,19 +158,14 @@ pub fn list_event_by_id(conn: &Connection, id: u32) -> Result<()> {
             return Ok(());
         }
     };
-    line('_');
-    println!("DONE| ID| SUMMARY");
-    line('-');
-    println!(
-        "{} | {} | {}",
-        format_finished(event.done, false),
-        event.id.unwrap(),
-        event.summary
-    );
-    line('-');
+    print_vec_events(&vec![event]);
     Ok(())
 }
 
+pub fn add_event(conn: &Connection, summ: String) -> Result<()> {
+    Event::new(summ).into_database(&conn)?;
+    Ok(())
+}
 fn line(char_to_repeat: char) {
     let size = terminal_size().unwrap();
     let mut size_str = String::new();
