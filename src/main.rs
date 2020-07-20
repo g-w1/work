@@ -7,7 +7,7 @@ pub mod fuzzy;
 use database::*;
 use rusqlite::{Connection, Result};
 use std::env::var;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 
 fn main() -> Result<()> {
     // opening the connection to the database

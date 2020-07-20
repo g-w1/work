@@ -84,19 +84,19 @@ impl SkimItem for Event {
 }
 
 impl Event {
-    fn get_summ_with_done(&self) -> String {
-        format!(
-            "{}  {}",
-            {
-                if self.done {
-                    "✅"
-                } else {
-                    "❌"
-                }
-            },
-            self.summary
-        )
-    }
+    // fn get_summ_with_done(&self) -> String {
+    //     format!(
+    //         "{}  {}",
+    //         {
+    //             if self.done {
+    //                 "✅"
+    //             } else {
+    //                 "❌"
+    //             }
+    //         },
+    //         self.summary
+    //     )
+    // }
     fn get_summ_with_id(&self) -> String {
         format!("{}: {}", self.id.unwrap(), self.summary)
     }
