@@ -76,7 +76,7 @@ pub fn rm_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
 
 impl SkimItem for Event {
     fn display(&self) -> Cow<AnsiString> {
-        Cow::Owned(self.summary.as_str().into())
+        Cow::Owned(self.get_summ_with_id().into())
     }
     fn text(&self) -> Cow<str> {
         Cow::Owned(self.get_summ_with_id())

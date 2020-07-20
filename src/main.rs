@@ -1,4 +1,4 @@
-pub mod config;
+zub mod config;
 pub mod database;
 pub mod event;
 pub mod frontend;
@@ -19,8 +19,8 @@ fn main() -> Result<()> {
         .iter()
         .collect();
     if !path.exists() {
-        println!("initalized empty database at ~/.local/share/worktodo/work.db");
         std::fs::create_dir_all(path_dir).unwrap();
+        println!("initalized empty database at ~/.local/share/worktodo/work.db");
     }
     let conn = Connection::open(path)?;
     // clear it for testing purposes
