@@ -4,10 +4,10 @@
 
 Features:
 
-[X] use a sqlite database with [rusqlite](https://docs.rs/rusqlite/0.23.1/rusqlite/)
+- [x] use a sqlite database with [rusqlite](https://docs.rs/rusqlite/0.23.1/rusqlite/)
 
-[X] command line parsing with [clap.rs](https://clap.rs)
+- [x] command line parsing with [clap.rs](https://clap.rs)
 
-[X] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
+- [x] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
 
-[ ] config file parsing with [serde.rs](https://serde.rs)
+- [] config file parsing with [serde.rs](https://serde.rs)
