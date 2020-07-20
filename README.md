@@ -8,4 +8,6 @@ Features:
 
 [X] command line parsing with [clap.rs](https://clap.rs)
 
-[ ] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
+[X] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
+
+[ ] config file parsing with [serde.rs](https://serde.rs)
