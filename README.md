@@ -10,4 +10,4 @@ Features:
 
 - [x] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
 
-- [] config file parsing with [serde.rs](https://serde.rs)
+- [ ] config file parsing with [serde.rs](https://serde.rs)
