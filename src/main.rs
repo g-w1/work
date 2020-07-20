@@ -18,7 +18,7 @@ fn main() -> Result<()> {
     let path_dir: PathBuf = [home.as_str(), ".local", "share", "worktodo"]
         .iter()
         .collect();
-    if path.exists() {
+    if !path.exists() {
         std::fs::create_dir_all(path_dir).unwrap();
     }
     let conn = Connection::open(path)?;
