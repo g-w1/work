@@ -19,6 +19,7 @@ fn main() -> Result<()> {
         .iter()
         .collect();
     if !path.exists() {
+        println!("initalized empty database at ~/.local/share/worktodo/work.db");
         std::fs::create_dir_all(path_dir).unwrap();
     }
     let conn = Connection::open(path)?;
