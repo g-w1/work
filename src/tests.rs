@@ -1,19 +1,9 @@
-pub mod config;
-pub mod database;
-pub mod event;
-pub mod frontend;
-pub mod fuzzy;
-#[cfg(test)]
-pub mod tests;
-
-
-use database::*;
+use crate::database::*;
 use rusqlite::{Connection, Result};
 use std::env::var;
 use std::path::{PathBuf};
 
-fn main() -> Result<()> {
-    // opening the connection to the database
+fn clean_slate() -> Result<()> {
     let home = var("HOME").expect("you must be on a unix like system");
     let path: PathBuf = [home.as_str(), ".local", "share", "worktodo", "work.db"]
         .iter()
@@ -26,14 +16,13 @@ fn main() -> Result<()> {
         println!("initalized empty database at ~/.local/share/worktodo/work.db");
     }
     let conn = Connection::open(path)?;
-    // clear it for testing purposes
-    // down(&conn)?;
-    // make sure it works
+    down(&conn)?;
     up(&conn)?;
-    // testing
-    // use frontend::*;
-    // use event::Event;
-    // this is where the magic happens!
     config::parse(&conn)?;
-    Ok(())
+
+
+}
+#[test]
+fn dummy() {
+
 }
