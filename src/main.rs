@@ -1,4 +1,4 @@
-zub mod config;
+pub mod config;
 pub mod database;
 pub mod event;
 pub mod frontend;
