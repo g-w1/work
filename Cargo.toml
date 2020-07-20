@@ -9,5 +9,5 @@ edition = "2018"
 [dependencies]
 rusqlite = "0.23.1"
 clap = "3.0.0-beta.1"
-skim = "0.8.1"
+skim = "0.8.2"
 termion = "1.5.5"

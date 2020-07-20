@@ -1,5 +1,7 @@
 # Work: a terminal todo manager
 
+![screencapture](pics/out3.gif)
+
 Features:
 
 [X] use a sqlite database with [rusqlite](https://docs.rs/rusqlite/0.23.1/rusqlite/)
