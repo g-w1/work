@@ -1,6 +1,6 @@
 # Work: a terminal todo manager
 
-![screencapture](pics/out3.gif)
+![screencapture](https://raw.githubusercontent.com/g-w1/work/master/pics/out.gif)
 
 Features:
 
