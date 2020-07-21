@@ -2,6 +2,15 @@
 name = "work"
 version = "0.2.0"
 authors = ["g-w1 <jacoblevgw@gmail.com>"]
+license = "GNU GPL V3"
+license-file = "LICENSE"
+keywords = ["todo", "task management"]
+description = "A simple cli todo manager"
+documentation = "https://github.com/g-w1/work"
+readme = "README.md"
+homepage =  "https://github.com/g-w1/work"
+repository =  "https://github.com/g-w1/work"
+categories = ["command-line-utilities"]
 edition = "2018"
 
 
