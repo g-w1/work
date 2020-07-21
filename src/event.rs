@@ -21,3 +21,9 @@ impl Event {
         }
     }
 }
+
+impl PartialEq for Event {
+    fn eq(&self, other: &Self) -> bool {
+        self.done == other.done && self.summary == other.summary
+    }
+}

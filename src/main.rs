@@ -6,11 +6,10 @@ pub mod fuzzy;
 #[cfg(test)]
 pub mod tests;
 
-
 use database::*;
 use rusqlite::{Connection, Result};
 use std::env::var;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 fn main() -> Result<()> {
     // opening the connection to the database
