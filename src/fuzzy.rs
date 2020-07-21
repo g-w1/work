@@ -72,7 +72,9 @@ pub fn rm_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
                             .unwrap(),
                     ),
                 )?;
-                if x.len() > 1 {println!();}
+                if x.len() > 1 {
+                    println!();
+                }
             }
         }
         _ => {}

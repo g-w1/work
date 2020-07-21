@@ -28,14 +28,14 @@ fn format_finished(finished_or_not: bool, in_20th_century: bool) -> String {
     }
 }
 
-fn print_vec_events(event_vec: &Vec<Event>) {
+fn print_vec_events(event_vec: &Vec<Event>, in_20th_century: bool) {
     line('_');
     println!("DONE| ID| SUMMARY");
     line('-');
     for event in event_vec {
         println!(
             "{} | {} | {}",
-            format_finished(event.done, true),
+            format_finished(event.done, in_20th_century),
             event.id.unwrap(),
             event.summary
         );
@@ -103,7 +103,7 @@ pub fn delete_down(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-pub fn list_all_events(conn: &Connection) -> Result<()> {
+pub fn list_all_events(conn: &Connection, emojis: bool) -> Result<()> {
     let events_special_stuff = get_all_events(&conn);
     let events = match events_special_stuff {
         Ok(x) => x,
@@ -123,11 +123,11 @@ pub fn list_all_events(conn: &Connection) -> Result<()> {
         };
         events_out.push(_event);
     }
-    print_vec_events(&events_out);
+    print_vec_events(&events_out, emojis);
     Ok(())
 }
 
-pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> {
+pub fn list_range_events(conn: &Connection, start: u32, end: u32, emojis: bool) -> Result<()> {
     let events_special_stuff = get_range_events(&conn, start, end);
     let events = match events_special_stuff {
         Ok(x) => x,
@@ -147,11 +147,11 @@ pub fn list_range_events(conn: &Connection, start: u32, end: u32) -> Result<()> 
         };
         events_out.push(_event);
     }
-    print_vec_events(&events_out);
+    print_vec_events(&events_out, emojis);
     Ok(())
 }
 
-pub fn list_event_by_id(conn: &Connection, id: u32) -> Result<()> {
+pub fn list_event_by_id(conn: &Connection, id: u32, emojis: bool) -> Result<()> {
     let event_result = get_event_by_id(&conn, id);
     let event = match event_result {
         Ok(x) => x,
@@ -160,7 +160,7 @@ pub fn list_event_by_id(conn: &Connection, id: u32) -> Result<()> {
             return Ok(());
         }
     };
-    print_vec_events(&vec![event]);
+    print_vec_events(&vec![event], emojis);
     Ok(())
 }
 

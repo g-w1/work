@@ -26,14 +26,14 @@ fn main() -> Result<()> {
         println!("initalized empty database at ~/.local/share/worktodo/work.db");
     }
     let conn = Connection::open(path)?;
-    // clear it for testing purposes
-    // down(&conn)?;
-    // make sure it works
     up(&conn)?;
-    // testing
-    // use frontend::*;
-    // use event::Event;
-    // this is where the magic happens!
-    cli::parse(&conn)?;
+    let cfg: Option<config::Config> = match config::load_config() {
+        Ok(x) => Some(x),
+        Err(_) => {
+            println!("error sourcing config");
+            None
+        }
+    };
+    cli::parse(&conn, cfg)?;
     Ok(())
 }

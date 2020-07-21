@@ -1,17 +1,17 @@
 use crate::frontend::*;
 use crate::fuzzy::*;
+use crate::config::Config;
 use clap::{App, Arg};
 use rusqlite::Connection;
 use rusqlite::Error;
 
 // the parsing function for the app
-pub fn parse(conn: &Connection) -> Result<(), Error> {
+pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
     // building the matcher
     let matches = App::new("Work")
         .version("0.1.0")
         .author("Jacob G-W <jacoblevgw@gmail.com>")
         .about("A cli todo app")
-        .arg("-c, --config=[FILE] 'use a custom config file'")
         // the ls subcommand. list stuff in the database
         .subcommand(
             App::new("ls").about("list events in database").arg(
@@ -39,23 +39,24 @@ pub fn parse(conn: &Connection) -> Result<(), Error> {
                 .arg("<id> 'the id of the event that you want to change. to use a fuzzy finder to find your event use `work edit fzf`'"),
         )
         .get_matches();
-    // config parsing
-    if let Some(c) = matches.value_of("config") {
-        println!("Config file is {}", c);
-    }
+    // parsing config
+    let cfg_parsed = match cfg {
+        Some(x) => x,
+        None => Config::default()
+    };
     // parsing ls cmd
     if let Some(ref lsmatches) = matches.subcommand_matches("ls") {
         if let Some(ids) = lsmatches.value_of("id") {
             match parse_ids(ids) {
                 Ok(x) => {
-                    list_event_by_id(&conn, x)?;
+                    list_event_by_id(&conn, x, cfg_parsed.emojis)?;
                 }
                 Err(_) => {
                     eprintln!("Invalid input. Try doing something like `work ls <id of an event>`");
                 }
             }
         } else {
-            list_all_events(&conn)?;
+            list_all_events(&conn, cfg_parsed.emojis)?;
         }
     }
     // parsing rm cmd
