@@ -6,7 +6,10 @@ use crate::frontend::update_event_from_id;
 use rusqlite::Connection;
 use skim::prelude::*;
 
-pub fn sk_all_events(conn: &Connection) -> Result<Option<Vec<String>>, rusqlite::Error> {
+pub fn sk_all_events(
+    conn: &Connection,
+    multi: bool,
+) -> Result<Option<Vec<String>>, rusqlite::Error> {
     // just getting a Vec<Event> from all events
     // TODO refactor this. I also use in frontend.rs:107
     let events = get_all_events(&conn)?;
@@ -17,7 +20,7 @@ pub fn sk_all_events(conn: &Connection) -> Result<Option<Vec<String>>, rusqlite:
     // skim stuff
     let options = SkimOptionsBuilder::default()
         .layout("reverse")
-        .multi(false)
+        .multi(multi)
         .build()
         .unwrap();
     let (tx_item, rx_item): (SkimItemSender, SkimItemReceiver) = unbounded();
@@ -43,7 +46,7 @@ pub fn sk_all_events(conn: &Connection) -> Result<Option<Vec<String>>, rusqlite:
 }
 
 pub fn update_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
-    match sk_all_events(&conn)? {
+    match sk_all_events(&conn, false)? {
         Some(x) => {
             update_event_from_id(
                 &conn,
@@ -57,17 +60,20 @@ pub fn update_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
     Ok(())
 }
 pub fn rm_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
-    match sk_all_events(&conn)? {
+    match sk_all_events(&conn, true)? {
         Some(x) => {
-            delete_event(
-                &conn,
-                get_event_by_id(
+            for i in &x {
+                delete_event(
                     &conn,
-                    x[0].split(':').collect::<Vec<&str>>()[0]
-                        .parse::<u32>()
-                        .unwrap(),
-                ),
-            )?;
+                    get_event_by_id(
+                        &conn,
+                        i.split(':').collect::<Vec<&str>>()[0]
+                            .parse::<u32>()
+                            .unwrap(),
+                    ),
+                )?;
+                if x.len() > 1 {println!();}
+            }
         }
         _ => {}
     }

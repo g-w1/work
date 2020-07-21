@@ -1,3 +1,4 @@
+pub mod cli;
 pub mod config;
 pub mod database;
 pub mod event;
@@ -33,6 +34,6 @@ fn main() -> Result<()> {
     // use frontend::*;
     // use event::Event;
     // this is where the magic happens!
-    config::parse(&conn)?;
+    cli::parse(&conn)?;
     Ok(())
 }

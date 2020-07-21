@@ -4,6 +4,7 @@ use crate::event::Event;
 use rusqlite::{Connection, Result};
 use std::env::var;
 use std::path::PathBuf;
+// TODO add more tests. this is not enough
 
 fn get_conn() -> Result<Connection> {
     let home = var("HOME").expect("you must be on a unix like system");
