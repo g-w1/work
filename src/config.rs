@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub emojis: bool,
     pub backticks: bool,
+    pub verbose: bool,
+    pub show_id_in_ls: bool,
+    pub ask_for_confirm: bool,
 }
 
 impl ::std::default::Default for Config {
@@ -11,6 +14,9 @@ impl ::std::default::Default for Config {
         Self {
             emojis: true,
             backticks: true,
+            verbose: true,
+            show_id_in_ls: true,
+            ask_for_confirm: true,
         }
     }
 }

@@ -1,6 +1,6 @@
+use crate::config::Config;
 use crate::frontend::*;
 use crate::fuzzy::*;
-use crate::config::Config;
 use clap::{App, Arg};
 use rusqlite::Connection;
 use rusqlite::Error;
@@ -42,35 +42,35 @@ pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
     // parsing config
     let cfg_parsed = match cfg {
         Some(x) => x,
-        None => Config::default()
+        None => Config::default(),
     };
     // parsing ls cmd
     if let Some(ref lsmatches) = matches.subcommand_matches("ls") {
         if let Some(ids) = lsmatches.value_of("id") {
             match parse_ids(ids) {
                 Ok(x) => {
-                    list_event_by_id(&conn, x, cfg_parsed.emojis)?;
+                    list_event_by_id(&conn, x, &cfg_parsed)?;
                 }
                 Err(_) => {
                     eprintln!("Invalid input. Try doing something like `work ls <id of an event>`");
                 }
             }
         } else {
-            list_all_events(&conn, cfg_parsed.emojis)?;
+            list_all_events(&conn, &cfg_parsed)?;
         }
     }
     // parsing rm cmd
     if let Some(ref rm_matches) = matches.subcommand_matches("rm") {
         if let Some(ids) = rm_matches.value_of("id") {
             match ids {
-                "fzf" => rm_sk(&conn)?,
+                "fzf" => rm_sk(&conn, &cfg_parsed)?,
                 _ => match parse_ids(ids) {
                     Ok(x) => {
-                        delete_event_from_id(&conn, x as i32);
+                        delete_event_from_id(&conn, x as i32, &cfg_parsed);
                     }
                     Err(_) => {
                         if ids == "all" {
-                            delete_down(&conn)?;
+                            delete_down(&conn, &cfg_parsed)?;
                         } else {
                             eprintln!(
                         "Invalid input. Try doing something like `work rm <id of an event>`"
@@ -84,8 +84,7 @@ pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
     // parsing add cmd
     if let Some(ref add_matches) = matches.subcommand_matches("add") {
         if let Some(summary) = add_matches.value_of("summary") {
-            add_event(&conn, summary.to_string())?;
-            println!("added event with summary ``{}\" to database", summary);
+            add_event(&conn, summary.to_string(), &cfg_parsed)?;
         }
     }
     // parsing edit cmd
@@ -93,11 +92,11 @@ pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
         if let Some(idstring) = edit_matches.value_of("id") {
             match idstring {
                 "fzf" => {
-                    update_sk(&conn)?;
+                    update_sk(&conn, &cfg_parsed)?;
                 }
                 _ => match parse_ids(idstring) {
                     Ok(x) => {
-                        update_event_from_id(&conn, x)?;
+                        update_event_from_id(&conn, x, &cfg_parsed)?;
                     }
                     Err(_) => {
                         eprintln!(

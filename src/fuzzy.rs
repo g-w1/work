@@ -1,4 +1,5 @@
 extern crate skim;
+use crate::config::Config;
 use crate::database::*;
 use crate::event::Event;
 use crate::frontend::delete_event;
@@ -45,7 +46,7 @@ pub fn sk_all_events(
     Ok(items_to_return)
 }
 
-pub fn update_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
+pub fn update_sk(conn: &Connection, cfg: &Config) -> Result<(), rusqlite::Error> {
     match sk_all_events(&conn, false)? {
         Some(x) => {
             update_event_from_id(
@@ -53,13 +54,14 @@ pub fn update_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
                 x[0].split(':').collect::<Vec<&str>>()[0]
                     .parse::<u32>()
                     .unwrap(),
+                &cfg,
             )?;
         }
         _ => {}
     }
     Ok(())
 }
-pub fn rm_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
+pub fn rm_sk(conn: &Connection, cfg: &Config) -> Result<(), rusqlite::Error> {
     match sk_all_events(&conn, true)? {
         Some(x) => {
             for i in &x {
@@ -71,6 +73,7 @@ pub fn rm_sk(conn: &Connection) -> Result<(), rusqlite::Error> {
                             .parse::<u32>()
                             .unwrap(),
                     ),
+                    &cfg,
                 )?;
                 if x.len() > 1 {
                     println!();

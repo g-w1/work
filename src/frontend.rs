@@ -1,3 +1,4 @@
+use crate::config::Config;
 use crate::database::*;
 use crate::event::Event;
 use rusqlite::{Connection, Result};
@@ -28,22 +29,55 @@ fn format_finished(finished_or_not: bool, in_20th_century: bool) -> String {
     }
 }
 
-fn print_vec_events(event_vec: &Vec<Event>, in_20th_century: bool) {
-    line('_');
-    println!("DONE| ID| SUMMARY");
-    line('-');
-    for event in event_vec {
-        println!(
-            "{} | {} | {}",
-            format_finished(event.done, in_20th_century),
-            event.id.unwrap(),
-            event.summary
-        );
+fn print_vec_events(event_vec: &Vec<Event>, cfg: &Config) {
+    if cfg.show_id_in_ls && cfg.verbose {
+        line('_');
+        println!("DONE | ID | SUMMARY");
+        line('-');
+        for event in event_vec {
+            println!(
+                "{} | {} | {}",
+                format_finished(event.done, cfg.emojis),
+                event.id.unwrap(),
+                event.summary
+            );
+        }
+        line('-');
+    } else if cfg.show_id_in_ls && !cfg.verbose {
+        for event in event_vec {
+            println!(
+                "{} | {} | {}",
+                format_finished(event.done, cfg.emojis),
+                event.id.unwrap(),
+                event.summary
+            );
+        }
+    } else if !cfg.show_id_in_ls && cfg.verbose {
+        if cfg.show_id_in_ls && cfg.verbose {
+            line('_');
+            println!("DONE | SUMMARY");
+            line('-');
+            for event in event_vec {
+                println!(
+                    "{} | {}",
+                    format_finished(event.done, cfg.emojis),
+                    event.summary
+                );
+            }
+            line('-');
+        }
+    } else if !cfg.show_id_in_ls && !cfg.verbose {
+        for event in event_vec {
+            println!(
+                "{} | {}",
+                format_finished(event.done, cfg.emojis),
+                event.summary
+            );
+        }
     }
-    line('-');
 }
 
-pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()> {
+pub fn delete_event(conn: &Connection, eventresult: Result<Event>, cfg: &Config) -> Result<()> {
     let event = match eventresult {
         Ok(x) => x,
         Err(_) => {
@@ -51,23 +85,32 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>) -> Result<()>
             return Ok(());
         }
     };
-    println!(
-        "Delete event with id: '{}' and summary: `{}'?\nThis is not undoable.",
-        event.id.unwrap(),
-        event.summary
-    );
-    if are_u_sure() {
+    if cfg.ask_for_confirm {
+        println!(
+            "Delete event with id: '{}' and summary: {}{}'?\nThis is not undoable.",
+            backticks_or_quotes(cfg.backticks, false),
+            event.id.unwrap(),
+            event.summary
+        );
+        if are_u_sure() {
+            delete_event_by_id(&conn, event.id.unwrap())?;
+            println!("Deleted event with id {}", event.id.unwrap());
+        } else {
+            println!("Canceled. Did not delete anything.");
+        }
+    } else if !cfg.ask_for_confirm && cfg.verbose {
         delete_event_by_id(&conn, event.id.unwrap())?;
         println!("Deleted event with id {}", event.id.unwrap());
-    } else {
-        println!("Canceled. Did not delete anything.");
+    } else if !cfg.ask_for_confirm && !cfg.verbose {
+        delete_event_by_id(&conn, event.id.unwrap())?;
     }
     Ok(())
 }
 
-pub fn delete_event_from_id(conn: &Connection, id: i32) {
+pub fn delete_event_from_id(conn: &Connection, id: i32, cfg: &Config) {
     println!(
-        "Delete event with id: '{}' and summary: `{}'?\nThis is not undoable.",
+        "Delete event with id: '{}' and summary: {}{}'?\nThis is not undoable.",
+        backticks_or_quotes(cfg.backticks, false),
         id,
         match get_event_by_id(&conn, id as u32) {
             Ok(x) => x,
@@ -92,18 +135,25 @@ pub fn delete_event_from_id(conn: &Connection, id: i32) {
     }
 }
 
-pub fn delete_down(conn: &Connection) -> Result<()> {
-    println!("THIS WILL DELETE THE WHOLE DATABASE.");
-    if are_u_sure() {
+pub fn delete_down(conn: &Connection, cfg: &Config) -> Result<()> {
+    if cfg.ask_for_confirm {
+        println!("THIS WILL DELETE THE WHOLE DATABASE.");
+        if are_u_sure() {
+            down(&conn)?;
+            println!("deleted everything");
+        } else {
+            println!("phew. did not delete anything");
+        }
+    } else if !cfg.ask_for_confirm && cfg.verbose {
         down(&conn)?;
         println!("deleted everything");
-    } else {
-        println!("phew. did not delete anything");
+    } else if !cfg.ask_for_confirm && !cfg.verbose {
+        down(&conn)?;
     }
     Ok(())
 }
 
-pub fn list_all_events(conn: &Connection, emojis: bool) -> Result<()> {
+pub fn list_all_events(conn: &Connection, cfg: &Config) -> Result<()> {
     let events_special_stuff = get_all_events(&conn);
     let events = match events_special_stuff {
         Ok(x) => x,
@@ -123,11 +173,11 @@ pub fn list_all_events(conn: &Connection, emojis: bool) -> Result<()> {
         };
         events_out.push(_event);
     }
-    print_vec_events(&events_out, emojis);
+    print_vec_events(&events_out, &cfg);
     Ok(())
 }
 
-pub fn list_range_events(conn: &Connection, start: u32, end: u32, emojis: bool) -> Result<()> {
+pub fn list_range_events(conn: &Connection, start: u32, end: u32, cfg: &Config) -> Result<()> {
     let events_special_stuff = get_range_events(&conn, start, end);
     let events = match events_special_stuff {
         Ok(x) => x,
@@ -147,11 +197,11 @@ pub fn list_range_events(conn: &Connection, start: u32, end: u32, emojis: bool) 
         };
         events_out.push(_event);
     }
-    print_vec_events(&events_out, emojis);
+    print_vec_events(&events_out, &cfg);
     Ok(())
 }
 
-pub fn list_event_by_id(conn: &Connection, id: u32, emojis: bool) -> Result<()> {
+pub fn list_event_by_id(conn: &Connection, id: u32, cfg: &Config) -> Result<()> {
     let event_result = get_event_by_id(&conn, id);
     let event = match event_result {
         Ok(x) => x,
@@ -160,14 +210,18 @@ pub fn list_event_by_id(conn: &Connection, id: u32, emojis: bool) -> Result<()> 
             return Ok(());
         }
     };
-    print_vec_events(&vec![event], emojis);
+    print_vec_events(&vec![event], &cfg);
     Ok(())
 }
 
-pub fn add_event(conn: &Connection, summ: String) -> Result<()> {
-    Event::new(summ).into_database(&conn)?;
+pub fn add_event(conn: &Connection, summ: String, cfg: &Config) -> Result<()> {
+    Event::new(summ.clone()).into_database(&conn)?;
+            if cfg.verbose {
+            println!("added event with summary {}{}\" to database", backticks_or_quotes(cfg.backticks, true), summ);
+            }
     Ok(())
 }
+
 
 fn line(char_to_repeat: char) {
     let size = terminal_size().unwrap();
@@ -178,7 +232,7 @@ fn line(char_to_repeat: char) {
     println!("{}", size_str);
 }
 
-pub fn update_event_from_id(conn: &Connection, id: u32) -> Result<()> {
+pub fn update_event_from_id(conn: &Connection, id: u32, cfg: &Config) -> Result<()> {
     let event = match get_event_by_id(&conn, id) {
         Ok(x) => x,
         Err(_) => {
@@ -187,7 +241,8 @@ pub fn update_event_from_id(conn: &Connection, id: u32) -> Result<()> {
         }
     };
     println!(
-        "What should be the new summary of the event with summary ``{}\" be:",
+        "What should be the new summary of the event with summary {}{}\" be:",
+        backticks_or_quotes(cfg.backticks, true),
         event.summary
     );
     let mut new_summ: String = String::new();
@@ -220,6 +275,22 @@ pub fn update_event_from_id(conn: &Connection, id: u32) -> Result<()> {
         _ => {
             eprintln!("Error: something went wrong. oof");
             Ok(())
+        }
+    }
+}
+
+pub fn backticks_or_quotes(backticks: bool, one_or_two: bool) -> String {
+    if backticks {
+        if one_or_two {
+            String::from("``")
+        } else {
+            String::from("`")
+        }
+    } else {
+        if one_or_two {
+            String::from("\"")
+        } else {
+            String::from("'")
         }
     }
 }
