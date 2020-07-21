@@ -62,10 +62,8 @@ The database file will be stored at ``~/.local/share/worktodo/work.db`` It is a 
 
 ## Install:
 
-```bash
-git clone https://github.com/g-w1/work.git
-cd work
-cargo install --path .
-```
+It is on crates.io. Yay!
 
-(I may put on crates.io soon!)
+```bash
+cargo install work
+```
