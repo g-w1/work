@@ -10,7 +10,7 @@
 
 - [x] fuzzy finder built in with [skim](https://github.com/lotabout/skim)
 
-- [ ] config file parsing with [serde.rs](https://serde.rs)
+- [x] config file parsing with [confy](https://crates.io/crates/confy)
 
 ## Instructions:
 
@@ -39,7 +39,22 @@ DONE| ID| SUMMARY
 
 ``work edit fzf`` the same as ``work rm fzf`` except multiple are not allowed.
 
+## Configuration:
 
+You will find a `worktodo.toml` file in `~/.config/worktodo/` this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
+
+``~/.config/worktodo/worktodo.toml``
+```toml
+emojis = true
+backticks = true
+verbose = true
+show_id_in_ls = true
+ask_for_confirm = true
+```
+
+## Database:
+
+The database file will be stored at ``~/.local/share/worktodo/work.db`` It is a sqlite database.
 
 ## Limits:
 

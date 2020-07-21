@@ -53,19 +53,17 @@ fn print_vec_events(event_vec: &Vec<Event>, cfg: &Config) {
             );
         }
     } else if !cfg.show_id_in_ls && cfg.verbose {
-        if cfg.show_id_in_ls && cfg.verbose {
-            line('_');
-            println!("DONE | SUMMARY");
-            line('-');
-            for event in event_vec {
-                println!(
-                    "{} | {}",
-                    format_finished(event.done, cfg.emojis),
-                    event.summary
-                );
-            }
-            line('-');
+        line('_');
+        println!("DONE | SUMMARY");
+        line('-');
+        for event in event_vec {
+            println!(
+                "{} | {}",
+                format_finished(event.done, cfg.emojis),
+                event.summary
+            );
         }
+        line('-');
     } else if !cfg.show_id_in_ls && !cfg.verbose {
         for event in event_vec {
             println!(
@@ -88,8 +86,8 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>, cfg: &Config)
     if cfg.ask_for_confirm {
         println!(
             "Delete event with id: '{}' and summary: {}{}'?\nThis is not undoable.",
-            backticks_or_quotes(cfg.backticks, false),
             event.id.unwrap(),
+            backticks_or_quotes(cfg.backticks, false),
             event.summary
         );
         if are_u_sure() {
@@ -108,30 +106,49 @@ pub fn delete_event(conn: &Connection, eventresult: Result<Event>, cfg: &Config)
 }
 
 pub fn delete_event_from_id(conn: &Connection, id: i32, cfg: &Config) {
-    println!(
-        "Delete event with id: '{}' and summary: {}{}'?\nThis is not undoable.",
-        backticks_or_quotes(cfg.backticks, false),
-        id,
-        match get_event_by_id(&conn, id as u32) {
-            Ok(x) => x,
-            Err(_) => {
-                eprintln!(
+    if cfg.ask_for_confirm {
+        println!(
+            "Delete event with id: '{}' and summary: {}{}'?\nThis is not undoable.",
+            id,
+            backticks_or_quotes(cfg.backticks, false),
+            match get_event_by_id(&conn, id as u32) {
+                Ok(x) => {
+                    x
+                }
+                Err(_) => {
+                    eprintln!(
                 "Error: event not found.\nDid not delete.\nPlease try again with a valid event id"
             );
-                return;
+                    return;
+                }
             }
+            .summary
+        );
+        if are_u_sure() {
+            match delete_event_by_id(&conn, id) {
+                Ok(_) => {
+                    if cfg.verbose {
+                        println!("Deleted event with id {}", id)
+                    }
+                }
+                Err(_) => eprintln!(
+                "Error: event not found.\nDid not delete.\nPlease try again with a valid event id"
+            ),
+            }
+        } else {
+            println!("Canceled. Did not delete anything.");
         }
-        .summary
-    );
-    if are_u_sure() {
+    } else if !cfg.ask_for_confirm {
         match delete_event_by_id(&conn, id) {
-            Ok(_) => println!("Deleted event with id {}", id),
+            Ok(_) => {
+                if cfg.verbose {
+                    println!("Deleted event with id {}", id)
+                }
+            }
             Err(_) => eprintln!(
                 "Error: event not found.\nDid not delete.\nPlease try again with a valid event id"
             ),
         }
-    } else {
-        println!("Canceled. Did not delete anything.");
     }
 }
 
@@ -216,12 +233,15 @@ pub fn list_event_by_id(conn: &Connection, id: u32, cfg: &Config) -> Result<()> 
 
 pub fn add_event(conn: &Connection, summ: String, cfg: &Config) -> Result<()> {
     Event::new(summ.clone()).into_database(&conn)?;
-            if cfg.verbose {
-            println!("added event with summary {}{}\" to database", backticks_or_quotes(cfg.backticks, true), summ);
-            }
+    if cfg.verbose {
+        println!(
+            "added event with summary {}{}\" to database",
+            backticks_or_quotes(cfg.backticks, true),
+            summ
+        );
+    }
     Ok(())
 }
-
 
 fn line(char_to_repeat: char) {
     let size = terminal_size().unwrap();

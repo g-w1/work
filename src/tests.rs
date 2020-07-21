@@ -1,6 +1,6 @@
 use crate::database::*;
 use crate::event::Event;
-
+use crate::frontend::backticks_or_quotes;
 use rusqlite::{Connection, Result};
 use std::env::var;
 use std::path::PathBuf;
@@ -22,23 +22,6 @@ fn get_conn() -> Result<Connection> {
     down(&conn).unwrap();
     up(&conn).unwrap();
     Ok(conn)
-}
-#[test]
-fn clean_slate() {
-    let home = var("HOME").expect("you must be on a unix like system");
-    let path: PathBuf = [home.as_str(), ".local", "share", "worktodo", "work.db"]
-        .iter()
-        .collect();
-    let path_dir: PathBuf = [home.as_str(), ".local", "share", "worktodo"]
-        .iter()
-        .collect();
-    if !path.exists() {
-        std::fs::create_dir_all(path_dir).unwrap();
-        println!("initalized empty database at ~/.local/share/worktodo/work.db");
-    }
-    let conn = Connection::open(path).unwrap();
-    down(&conn).unwrap();
-    up(&conn).unwrap();
 }
 #[test]
 fn insert_and_get_back_event() {
@@ -63,4 +46,11 @@ fn insert_and_get_back_event() {
     }
     assert_eq!(events[0], Event::new(name));
     assert_eq!(events[1], Event::new(othername));
+}
+#[test]
+fn backticks() {
+    assert_eq!(backticks_or_quotes(true, false), String::from("`"));
+    assert_eq!(backticks_or_quotes(true, true), String::from("``"));
+    assert_eq!(backticks_or_quotes(false, true), String::from("\""));
+    assert_eq!(backticks_or_quotes(false, false), String::from("'"));
 }
