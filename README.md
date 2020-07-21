@@ -2,7 +2,7 @@
 
 ![screencapture](https://raw.githubusercontent.com/g-w1/work/master/pics/out.gif)
 
-Features:
+## Features:
 
 - [x] use a sqlite database with [rusqlite](https://docs.rs/rusqlite/0.23.1/rusqlite/)
 
@@ -12,7 +12,7 @@ Features:
 
 - [ ] config file parsing with [serde.rs](https://serde.rs)
 
-Instructions:
+## Instructions:
 
 ``work ls`` to list all of your events.
 Ex:
@@ -41,11 +41,11 @@ DONE| ID| SUMMARY
 
 
 
-Limits:
+## Limits:
 
 - Only works on unix systems for now (I dont have any windows stuff to test on for now).
 
-Install:
+## Install:
 
 ```bash
 git clone https://github.com/g-w1/work.git
