@@ -243,6 +243,20 @@ pub fn add_event(conn: &Connection, summ: String, cfg: &Config) -> Result<()> {
     Ok(())
 }
 
+pub fn make_done(conn: &Connection, id: u32, cfg: &Config) -> Result<()> {
+    match make_done_from_id(conn, id) {
+        Ok(_) => {
+            if cfg.verbose {
+                println!("event with id {} was marked done", id);
+            }
+        }
+        Err(_) => {
+            eprintln!("Error: could not make that event done");
+        }
+    }
+    Ok(())
+}
+
 fn line(char_to_repeat: char) {
     let size = terminal_size().unwrap();
     let mut size_str = String::new();

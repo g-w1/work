@@ -38,6 +38,11 @@ pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
                 .about("change an event that is in the database")
                 .arg("<id> 'the id of the event that you want to change. to use a fuzzy finder to find your event use `work edit fzf`'"),
         )
+        .subcommand(
+            App::new("done")
+                .about("mark an event as done")
+                .arg("<id> 'the id of the event that you want to make done. to use a fuzzy finder to find your event use `work done fzf`'"),
+        )
         .get_matches();
     // parsing config
     let cfg_parsed = match cfg {
@@ -100,7 +105,27 @@ pub fn parse(conn: &Connection, cfg: Option<Config>) -> Result<(), Error> {
                     }
                     Err(_) => {
                         eprintln!(
-                        "Error: invalid input. Try doing something like `work ls <id of an event>`"
+                        "Error: invalid input. Try doing something like `work edit <id of an event>`"
+                    );
+                    }
+                },
+            }
+        }
+    }
+    // parsing done cmd
+    if let Some(ref done_matches) = matches.subcommand_matches("done") {
+        if let Some(idstring) = done_matches.value_of("id") {
+            match idstring {
+                "fzf" => {
+                    done_sk(&conn, &cfg_parsed)?;
+                }
+                _ => match parse_ids(idstring) {
+                    Ok(x) => {
+                        make_done(&conn, x, &cfg_parsed)?;
+                    }
+                    Err(_) => {
+                        eprintln!(
+                        "Error: invalid input. Try doing something like `work done <id of an event>`"
                     );
                     }
                 },

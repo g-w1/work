@@ -83,6 +83,15 @@ pub fn get_range_events(conn: &Connection, start: u32, end: u32) -> Result<Vec<R
     Ok(events)
 }
 
+pub fn make_done_from_id(conn: &Connection, id: u32) -> Result<()> {
+    conn.execute(
+        "update events set done = ?1 where id = ?2",
+        params![true, id],
+    )?;
+    Ok(())
+
+}
+
 impl Event {
     pub fn into_database(&self, conn: &Connection) -> Result<()> {
         conn.execute(
