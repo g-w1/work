@@ -39,6 +39,10 @@ DONE| ID| SUMMARY
 
 ``work edit fzf`` the same as ``work rm fzf`` except multiple are not allowed.
 
+``work done <event id>`` Mark an event as done. Ex: ``work done 1``
+
+``work done fzf`` the same as ``work rm fzf`` except marking events done. Multiple *are* allowed.
+
 ## Configuration:
 
 You will find a `worktodo.toml` file in `~/.config/worktodo/` this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
