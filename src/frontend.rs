@@ -10,7 +10,7 @@ fn are_u_sure() -> bool {
     let mut sure: String = String::new();
     stdin().read_line(&mut sure).unwrap();
     let sure = sure.to_lowercase().trim().to_owned();
-    if sure == String::from("y") || sure == String::from("yes") {
+    if sure == String::from("y") || sure == String::from("yes") || sure == String::from("") {
         true
     } else {
         false
