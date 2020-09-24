@@ -84,12 +84,19 @@ pub fn get_range_events(conn: &Connection, start: u32, end: u32) -> Result<Vec<R
 }
 
 pub fn make_done_from_id(conn: &Connection, id: u32) -> Result<()> {
-    conn.execute(
-        "update events set done = ?1 where id = ?2",
-        params![true, id],
-    )?;
+    let item = get_event_by_id(&conn, id)?;
+    if !item.done {
+        conn.execute(
+            "update events set done = ?1 where id = ?2",
+            params![true, id],
+        )?;
+    } else {
+        conn.execute(
+            "update events set done = ?1 where id = ?2",
+            params![false, id],
+        )?;
+    }
     Ok(())
-
 }
 
 impl Event {

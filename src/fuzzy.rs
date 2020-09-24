@@ -3,8 +3,8 @@ use crate::config::Config;
 use crate::database::*;
 use crate::event::Event;
 use crate::frontend::delete_event;
-use crate::frontend::update_event_from_id;
 use crate::frontend::make_done;
+use crate::frontend::update_event_from_id;
 use rusqlite::Connection;
 use skim::prelude::*;
 
@@ -91,9 +91,9 @@ pub fn done_sk(conn: &Connection, cfg: &Config) -> Result<(), rusqlite::Error> {
             for i in &x {
                 make_done(
                     &conn,
-                        i.split(':').collect::<Vec<&str>>()[0]
-                            .parse::<u32>()
-                            .unwrap(),
+                    i.split(':').collect::<Vec<&str>>()[0]
+                        .parse::<u32>()
+                        .unwrap(),
                     &cfg,
                 )?;
                 // if x.len() > 1 {
@@ -104,9 +104,7 @@ pub fn done_sk(conn: &Connection, cfg: &Config) -> Result<(), rusqlite::Error> {
         _ => {}
     }
     Ok(())
-
 }
-
 
 impl SkimItem for Event {
     fn display(&self) -> Cow<AnsiString> {
