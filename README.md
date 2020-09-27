@@ -45,7 +45,7 @@ DONE| ID| SUMMARY
 
 ## Configuration:
 
-You will find a `worktodo.toml` file in `~/.config/worktodo/` this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
+You will find a `worktodo.toml` file in `~/.config/worktodo/` (on macos it will be somewhere different. I think the default place for configuration files.) this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
 
 ``~/.config/worktodo/worktodo.toml``
 ```toml
@@ -62,7 +62,7 @@ The database file will be stored at ``~/.local/share/worktodo/work.db`` It is a 
 
 ## Limits:
 
-- Only works on unix systems for now (I dont have any windows stuff to test on for now).
+- Only works on unix systems for now (I dont have any windows stuff to test on for now) (on macos the config file is in a different place. i think Library/Application\ Support).
 
 ## Install:
 
