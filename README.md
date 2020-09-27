@@ -14,8 +14,9 @@
 
 ## Instructions:
 
-``work ls`` to list all of your events.
+`work ls` to list all of your events.
 Ex:
+
 ```
 [user@hostname ~]$ work ls
 ________________________________________
@@ -27,27 +28,28 @@ DONE| ID| SUMMARY
 ----------------------------------------
 ```
 
-``work add <string of an event to add>`` add an event. Ex: ``work add "test"``
+`work add <string of an event to add>` add an event. Ex: `work add "test"`
 
-``work rm <event id>`` to remove an event. Ex: ``work rm 1``
+`work rm <event id>` to remove an event. Ex: `work rm 1`
 
-``work rm fzf`` to remove an event or multiple through a fuzzy finder. Search through the events and press tab to select multiple.
+`work rm fzf` to remove an event or multiple through a fuzzy finder. Search through the events and press tab to select multiple.
 
-``work rm all`` delete the whole database of events.
+`work rm all` delete the whole database of events.
 
-``work edit <event id>`` get to a prompt to edit an event. This will allow you to edit the name and make it done. Ex: ``work edit 1``
+`work edit <event id>` get to a prompt to edit an event. This will allow you to edit the name and make it done. Ex: `work edit 1`
 
-``work edit fzf`` the same as ``work rm fzf`` except multiple are not allowed.
+`work edit fzf` the same as `work rm fzf` except multiple are not allowed.
 
-``work done <event id>`` Mark an event as done. Ex: ``work done 1``
+`work done <event id>` Mark an event as done. Ex: `work done 1`
 
-``work done fzf`` the same as ``work rm fzf`` except marking events done. Multiple *are* allowed.
+`work done fzf` the same as `work rm fzf` except marking events done. Multiple _are_ allowed.
 
 ## Configuration:
 
-You will find a `worktodo.toml` file in `~/.config/worktodo/` (on macos it will be somewhere different. I think the default place for configuration files.) this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
+You will find a `worktodo.toml` file in `~/.config/worktodo/` (I think it will be on `Library/Application\ Support` on macos because that is the default config location) this is the method of configuration. The settings are self explanatory. The config file will be auto generated on the first use of work.
 
-``~/.config/worktodo/worktodo.toml``
+`~/.config/worktodo/worktodo.toml`
+
 ```toml
 emojis = true
 backticks = true
@@ -58,11 +60,12 @@ ask_for_confirm = true
 
 ## Database:
 
-The database file will be stored at ``~/.local/share/worktodo/work.db`` It is a sqlite database.
+The database file will be stored at `~/.local/share/worktodo/work.db` It is a sqlite database.
 
 ## Limits:
 
-- Only works on unix systems for now (I dont have any windows stuff to test on for now) (on macos the config file is in a different place. i think Library/Application\ Support).
+- Only works on unix systems for now (I dont have any windows stuff to test on for now). If anyone wants to test it please do!
+- on macos the config file is in a different place. i think `Library/Application\ Support`.
 
 ## Install:
 
@@ -70,4 +73,12 @@ It is on crates.io. Yay!
 
 ```bash
 cargo install work
+```
+
+You can also
+
+```
+bash git clone https://github.com/g-w1/work
+cd work
+cargo install --path .
 ```
