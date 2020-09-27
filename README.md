@@ -77,8 +77,8 @@ cargo install work
 
 You can also
 
-```
-bash git clone https://github.com/g-w1/work
+``` bash
+git clone https://github.com/g-w1/work
 cd work
 cargo install --path .
 ```
