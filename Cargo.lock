@@ -1063,7 +1063,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "work"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "clap 3.0.0-beta.2",
  "confy",
